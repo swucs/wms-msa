@@ -1,0 +1,7 @@
+application:
+  name: 신영냉장 창고관리시스템
+datasource:
+  driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://193.122.121.208:5432/sycoldstorage
+    username: sycoldstorage
+    password: sycoldstorage2021

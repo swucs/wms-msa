@@ -2,6 +2,7 @@ package com.sycoldstorage.customerservice.service.impl;
 
 import com.sycoldstorage.customerservice.dto.CustomerSearchRequest;
 import com.sycoldstorage.customerservice.dto.CustomerSearchResponse;
+import com.sycoldstorage.customerservice.dto.Paging;
 import com.sycoldstorage.customerservice.entity.Customer;
 import com.sycoldstorage.customerservice.repository.CustomerRepository;
 import com.sycoldstorage.customerservice.service.CustomerService;
@@ -35,21 +36,22 @@ public class CustomerServiceImpl implements CustomerService {
      * @return
      */
     @Override
-    public Page<Customer> searchCustomers(CustomerSearchRequest params) {
+    public Paging<CustomerSearchResponse> searchCustomers(CustomerSearchRequest params) {
+        
+        //Page, sort 정보를 생성
         PageRequest pageRequest = PageRequest.of(params.getPage(), params.getPageSize(), Sort.by("id"));
-
+        //검색조건 생성
         Specification<Customer> specification = CustomerSpecification.searchWith(params);
         Page<Customer> customers = customerRepository.findAll(specification, pageRequest);
 
+        //Customer => CustomerSearchResponse 변환
         List<CustomerSearchResponse> list = customers.getContent()
                 .stream()
                 .map(customer -> modelMapper.map(customer, CustomerSearchResponse.class))
                 .collect(Collectors.toList());
 
-
-        Page<CustomerSearchResponse> newPage = Page
-
-        return customers;
+        //Paging 생성하여 반환
+        return new Paging<>(customers.getTotalPages(), customers.getTotalElements(), list);
     }
 
 

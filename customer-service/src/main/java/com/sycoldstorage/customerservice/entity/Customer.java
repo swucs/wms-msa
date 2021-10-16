@@ -1,6 +1,7 @@
 package com.sycoldstorage.customerservice.entity;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,8 +14,9 @@ import javax.persistence.Id;
  * 고객 Entity
  */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity(name = "customer")
 @Getter
+@EqualsAndHashCode(of="id")
+@Entity(name = "customer")
 public class Customer {
 
     @Id

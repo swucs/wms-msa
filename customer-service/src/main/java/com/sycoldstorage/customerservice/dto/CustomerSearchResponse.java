@@ -1,12 +1,12 @@
 package com.sycoldstorage.customerservice.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
-@Builder
 @Getter
+@Setter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class CustomerSearchResponse {
 
     private int id;

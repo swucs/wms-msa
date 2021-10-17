@@ -1,9 +1,6 @@
 package com.sycoldstorage.customerservice.entity;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,19 +11,22 @@ import javax.persistence.Id;
  * 고객 Entity
  */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+//@Setter
+@Builder
 @EqualsAndHashCode(of="id")
 @Entity(name = "customer")
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String name;
-    private String merchantNumber;
+    private String businessNumber;
     private String representativeName;
-    private String BusinessConditions;
+    private String businessConditions;
     private String typeOfBusiness;
     private String address;
     private String phoneNumber;

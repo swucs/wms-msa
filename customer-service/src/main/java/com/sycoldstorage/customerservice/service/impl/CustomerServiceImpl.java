@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ public class CustomerServiceImpl implements CustomerService {
     private ModelMapper modelMapper;
 
     /**
-     * 고객 목록 검색
+     * 고객목록 검색
      * @param params 검색조건을 담은 객체
      * @return
      */
@@ -54,6 +55,14 @@ public class CustomerServiceImpl implements CustomerService {
         return new Paging<>(customers.getTotalPages(), customers.getTotalElements(), list);
     }
 
-
+    /**
+     * 고객정보 저장
+     * @param customer
+     */
+    @Transactional
+    @Override
+    public void save(Customer customer) {
+        customerRepository.save(customer);
+    }
 
 }

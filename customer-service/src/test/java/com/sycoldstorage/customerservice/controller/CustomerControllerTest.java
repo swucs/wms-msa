@@ -11,6 +11,8 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -27,19 +29,15 @@ class CustomerControllerTest {
     @Test
     void getCustomers() throws Exception {
 
-        CustomerSearchRequest request = CustomerSearchRequest.builder()
-                .page(1)
-                .pageSize(10)
-//                .name("테스트")
-                .build();
+        MultiValueMap<String, String> requestParam = new LinkedMultiValueMap<>();
+        requestParam.set("page", "1");
+        requestParam.set("pageSize", "10");
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/customers")
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .accept(MediaTypes.HAL_JSON)
-                .content(objectMapper.writeValueAsString(request))
-                )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .accept(MediaTypes.HAL_JSON)
+                        .queryParams(requestParam))
                 .andDo(print());
-        
     }
 }

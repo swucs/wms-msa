@@ -1,12 +1,11 @@
 package com.sycoldstorage.customerservice.spec;
 
-import com.sycoldstorage.customerservice.dto.CustomerSearchRequest;
+import com.sycoldstorage.customerservice.dto.SearchCustomerRequest;
 import com.sycoldstorage.customerservice.entity.Customer;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
@@ -17,23 +16,23 @@ import java.util.List;
  */
 public class CustomerSpecification {
 
-    public static Specification<Customer> searchWith(CustomerSearchRequest customerSearchRequest) {
+    public static Specification<Customer> searchWith(SearchCustomerRequest searchCustomerRequest) {
         return (Specification<Customer>) ((root, query, builder) -> {
 
             List<Predicate> predicate = new ArrayList<>();
 
-            if (StringUtils.isNotBlank(customerSearchRequest.getName())) {
-                predicate.add(likeName(root, builder, customerSearchRequest.getName()));
+            if (StringUtils.isNotBlank(searchCustomerRequest.getName())) {
+                predicate.add(likeName(root, builder, searchCustomerRequest.getName()));
             }
 
-            if (customerSearchRequest.getId() != null) {
-                predicate.add(equalId(root, builder, customerSearchRequest.getId()));
+            if (searchCustomerRequest.getId() != null) {
+                predicate.add(equalId(root, builder, searchCustomerRequest.getId()));
             }
 
-            if (StringUtils.isNotBlank(customerSearchRequest.getUseYn())) {
-                if (StringUtils.equals(customerSearchRequest.getUseYn(), "Y")) {
+            if (StringUtils.isNotBlank(searchCustomerRequest.getUseYn())) {
+                if (StringUtils.equals(searchCustomerRequest.getUseYn(), "Y")) {
                     predicate.add(equalUse(root, builder, true));
-                } else if (StringUtils.equals(customerSearchRequest.getUseYn(), "N")) {
+                } else if (StringUtils.equals(searchCustomerRequest.getUseYn(), "N")) {
                     predicate.add(equalUse(root, builder, false));
                 }
             }

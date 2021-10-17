@@ -11,7 +11,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerSearchRequest {
+public class SearchCustomerRequest {
 
     private Integer page;
     private Integer pageSize;

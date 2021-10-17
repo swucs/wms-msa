@@ -7,7 +7,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerSearchResponse {
+public class SearchCustomerResponse {
 
     private int id;
     private String name;

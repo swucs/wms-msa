@@ -13,8 +13,9 @@ import javax.persistence.Id;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-//@Setter
+@Setter
 @Builder
+@ToString
 @EqualsAndHashCode(of="id")
 @Entity(name = "customer")
 public class Customer {

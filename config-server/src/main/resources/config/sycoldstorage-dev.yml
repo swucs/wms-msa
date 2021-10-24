@@ -1,0 +1,7 @@
+application:
+  name: 신영냉장 창고관리시스템 개발
+datasource:
+  driver-class-name: org.postgresql.Driver
+  url: '{cipher}52ef58a7aeb1b0fb13619cd02db5a03009423daceec6890809261da25ef1af533d2c2de7f578831dd68c902de3d02792a7d864e05a13685ea30da230f23f4679c6b41735a455ce6a65ffe959c83ec71e'
+  username: '{cipher}c28d632e01f4f8482138e793c0ee3181b80f7335c50fb71157e4683a406f4ceb'
+  password: '{cipher}6fac450ac7e6ad8cdff352c33ebe422f7f7d03028027544c0c0a13089dc7973a'

@@ -3,18 +3,25 @@ server:
 spring:
   application:
     name: config-server
+  profiles:
+    active: native  # file system에서 Config file을 읽어 올 수 있도록 native profile을 활성화
   cloud:
     config:
       server:
         git:
-          uri: https://git.sungbae.net/shinyoung/wms-config.git
-          default-label: main
-          username: swucs
-          password: n9658261
+          uri: ${HOME}/config
+          #git repository로 하고자 할 때는 다음과 같이
+          #uri: https://git.sungbae.net/shinyoung/wms-config.git
+          #default-label: main
+          #username: xxx
+          #password: xxx
+        #config정보 읽어올 때 암호화된 text를 복호화 시킬것인지 여부
+        encrypt:
+          enabled: false
 
 eureka:
   client:
-    register-with-eureka: true      #? ??? ??? ?????? ????? ??
-    fetch-registry: true            #????? ?????? ????? ??
+    register-with-eureka: true      #유레카 클라이언트 활성화
+    fetch-registry: true            #유레카 클라이언트 활성화
     service-url:
-      defaultZone: http://localhost:8761/eureka   #eureka server ? ???? ?? ?? ??
+      defaultZone: http://localhost:8761/eureka   #eureka server의 url

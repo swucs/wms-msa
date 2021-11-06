@@ -17,7 +17,7 @@ import java.util.List;
 public class CustomerSpecification {
 
     public static Specification<Customer> searchWith(SearchCustomerRequest searchCustomerRequest) {
-        return (Specification<Customer>) ((root, query, builder) -> {
+        return ((root, query, builder) -> {
 
             List<Predicate> predicate = new ArrayList<>();
 

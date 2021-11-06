@@ -39,7 +39,7 @@ public class CustomerServiceImpl implements CustomerService {
      * @return
      */
     @Override
-    public Paging<SearchCustomerResponse> searchCustomers(SearchCustomerRequest params) {
+    public Page<SearchCustomerResponse> searchCustomers(SearchCustomerRequest params) {
         
         //Page, sort 정보를 생성
         PageRequest pageRequest = PageRequest.of(params.getPage(), params.getPageSize(), Sort.by("id"));
@@ -48,13 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
         Page<Customer> customers = customerRepository.findAll(specification, pageRequest);
 
         //Customer => CustomerSearchResponse 변환
-        List<SearchCustomerResponse> list = customers.getContent()
-                .stream()
-                .map(customer -> modelMapper.map(customer, SearchCustomerResponse.class))
-                .collect(Collectors.toList());
-
-        //Paging 생성하여 반환
-        return new Paging<>(customers.getTotalPages(), customers.getTotalElements(), list);
+        return customers.map(v -> modelMapper.map(v, SearchCustomerResponse.class));
     }
 
     /**

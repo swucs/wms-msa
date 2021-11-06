@@ -3,14 +3,12 @@ package com.sycoldstorage.customerservice.service.impl;
 import com.sycoldstorage.customerservice.dto.SaveCustomerRequest;
 import com.sycoldstorage.customerservice.dto.SearchCustomerRequest;
 import com.sycoldstorage.customerservice.dto.SearchCustomerResponse;
-import com.sycoldstorage.customerservice.dto.Paging;
-import com.sycoldstorage.customerservice.entity.Customer;
 import com.sycoldstorage.customerservice.service.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.data.domain.Page;
 
 import javax.transaction.Transactional;
 
@@ -33,9 +31,9 @@ class CustomerServiceImplTest {
                 .pageSize(10)
                 .build();
 
-        Paging<SearchCustomerResponse> customers = customerService.searchCustomers(searchCustomerRequest);
+        Page<SearchCustomerResponse> customers = customerService.searchCustomers(searchCustomerRequest);
 
-        assertThat(customers.getTotalCount()).isEqualTo(35);
+        assertThat(customers.getTotalElements()).isEqualTo(35);
         assertThat(customers.getTotalPages()).isEqualTo(4);
         assertThat(customers.getContent().size()).isEqualTo(10);
 

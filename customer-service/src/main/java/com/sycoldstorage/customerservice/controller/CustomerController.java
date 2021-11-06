@@ -26,7 +26,7 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping("/customers")
-    public ResponseEntity getCustomers(@ModelAttribute SearchCustomerRequest params, PagedResourcesAssembler<SearchCustomerResponse> assembler) {
+    public ResponseEntity queryCustomers(@ModelAttribute SearchCustomerRequest params, PagedResourcesAssembler<SearchCustomerResponse> assembler) {
         Page<SearchCustomerResponse> customers = customerService.searchCustomers(params);
 
 
@@ -36,7 +36,7 @@ public class CustomerController {
                         , entity -> EntityModel.of(entity,
                                 linkTo(
                                         methodOn(CustomerController.class)
-                                                .getCustomers(null, null)
+                                                .queryCustomers(null, null)
                                 )
                                 .slash(entity.getId())
                                 .withSelfRel()

@@ -3,6 +3,7 @@ package com.sycoldstorage.customerservice.service.impl;
 import com.sycoldstorage.customerservice.dto.SaveCustomerRequest;
 import com.sycoldstorage.customerservice.dto.SearchCustomerRequest;
 import com.sycoldstorage.customerservice.dto.SearchCustomerResponse;
+import com.sycoldstorage.customerservice.entity.Customer;
 import com.sycoldstorage.customerservice.service.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -31,7 +32,7 @@ class CustomerServiceImplTest {
                 .pageSize(10)
                 .build();
 
-        Page<SearchCustomerResponse> customers = customerService.searchCustomers(searchCustomerRequest);
+        Page<Customer> customers = customerService.searchCustomers(searchCustomerRequest);
 
         assertThat(customers.getTotalElements()).isEqualTo(35);
         assertThat(customers.getTotalPages()).isEqualTo(4);
@@ -40,7 +41,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    void save() {
+    void save() throws Exception {
 
         SaveCustomerRequest customer = SaveCustomerRequest.builder()
                 .name("고객명")
@@ -55,10 +56,10 @@ class CustomerServiceImplTest {
                 .build();
 
 
-        long id = customerService.save(customer);
+        Customer createdCustomer = customerService.create(customer);
 
         customer = SaveCustomerRequest.builder()
-                .id(id)
+                .id(createdCustomer.getId())
                 .name("고객명1")
                 .businessNumber("111-33-55555")
                 .representativeName("대표자명1")
@@ -70,6 +71,6 @@ class CustomerServiceImplTest {
                 .useYn("N")
                 .build();
 
-        customerService.save(customer);
+        customerService.update(customer);
     }
 }

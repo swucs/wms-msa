@@ -2,9 +2,13 @@ package com.sycoldstorage.customerservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sycoldstorage.customerservice.annotation.EnableMockMvc;
+import com.sycoldstorage.customerservice.dto.SaveCustomerRequest;
+import com.sycoldstorage.customerservice.entity.Customer;
+import com.sycoldstorage.customerservice.repository.CustomerRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,8 +18,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.ui.ModelMap;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import java.util.Optional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
@@ -40,13 +47,19 @@ class CustomerControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    ModelMapper modelMapper;
+
+    @Autowired
+    CustomerRepository customerRepository;
+
     @Test
     @DisplayName("고객목록")
     void getCustomers() throws Exception {
 
-        MultiValueMap<String, String> requestParam = new LinkedMultiValueMap<>();
-        requestParam.set("page", "1");
-        requestParam.set("pageSize", "10");
+//        MultiValueMap<String, String> requestParam = new LinkedMultiValueMap<>();
+//        requestParam.set("page", "1");
+//        requestParam.set("pageSize", "10");
 
         final String prefix = "_embedded.searchCustomerResponseList[].";
 
@@ -59,7 +72,8 @@ class CustomerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaTypes.HAL_JSON)
-                        .queryParams(requestParam))
+//                        .queryParams(requestParam)
+                    )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("page").exists())
@@ -97,11 +111,12 @@ class CustomerControllerTest {
                                 , fieldWithPath(prefix + "name").description("업체명")
                                 , fieldWithPath(prefix + "businessNumber").description("사업자등록번호")
                                 , fieldWithPath(prefix + "representativeName").description("대표자명")
-                                , fieldWithPath(prefix + "typeOfBusiness").description("종목")
+                                , fieldWithPath(prefix + "typeOfBusiness").description("업종")
+                                , fieldWithPath(prefix + "address").description("주소")
                                 , fieldWithPath(prefix + "phoneNumber").description("전화번호")
                                 , fieldWithPath(prefix + "faxNumber").description("fax번호")
                                 , fieldWithPath(prefix + "use").description("사용여부")
-                                , fieldWithPath(prefix + "businessConditions").description("종목")
+                                , fieldWithPath(prefix + "businessConditions").description("업태")
                                 , fieldWithPath(prefix + "_links.self.href").description("해당 데이터의 상세정보 링크")
                                 , fieldWithPath("_links.self.href").description("현재 화면 링크정보")
                                 , fieldWithPath("_links.first.href").description("현재 화면 링크정보")
@@ -120,4 +135,71 @@ class CustomerControllerTest {
 
         ;
     }
+
+    @Test
+    @DisplayName("고객정보 생성")
+    void createCustomer() throws Exception {
+
+        SaveCustomerRequest createRequest = SaveCustomerRequest.builder()
+                .name("이름")
+                .address("주소")
+                .businessConditions("test")
+                .faxNumber("팩스번호")
+                .phoneNumber("전화번호")
+                .representativeName("대표자명")
+                .businessNumber("사업자번호")
+                .useYn("Y")
+                .typeOfBusiness("test")
+                .build();
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/api/customer")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .accept(MediaTypes.HAL_JSON)
+                        .content(this.objectMapper.writeValueAsString(createRequest))
+                )
+                .andDo(print())
+                .andExpect(status().isCreated())
+        ;
+
+    }
+
+
+    @Test
+    @DisplayName("고객정보 수정")
+    void updateCustomer() throws Exception {
+
+        Optional<Customer> customerOptional = customerRepository.findById(47l);
+//        SaveCustomerRequest updateCustomerRequest = this.modelMapper.map(customerOptional.get(), SaveCustomerRequest.class);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/api/customer/{id}", customerOptional.get().getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .accept(MediaTypes.HAL_JSON)
+                                .content(this.objectMapper.writeValueAsString(customerOptional.get()))
+                        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                ;
+
+    }
+
+    @Test
+    @DisplayName("고객정보수정_400에러")
+    void updateCustomer_400error() throws Exception {
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/api/customer/999999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .accept(MediaTypes.HAL_JSON)
+                        .content(this.objectMapper.writeValueAsString(SaveCustomerRequest.builder().id(999999l).build()))
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound())
+        ;
+
+    }
+
 }

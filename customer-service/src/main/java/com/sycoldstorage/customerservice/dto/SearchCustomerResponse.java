@@ -13,8 +13,9 @@ public class SearchCustomerResponse {
     private String name;
     private String businessNumber;
     private String representativeName;
-    private String BusinessConditions;
+    private String businessConditions;
     private String typeOfBusiness;
+    private String address;
     private String phoneNumber;
     private String faxNumber;
     private boolean use;

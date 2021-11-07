@@ -5,6 +5,7 @@ import com.sycoldstorage.customerservice.dto.SearchCustomerRequest;
 import com.sycoldstorage.customerservice.dto.SearchCustomerResponse;
 import com.sycoldstorage.customerservice.dto.Paging;
 import com.sycoldstorage.customerservice.entity.Customer;
+import com.sycoldstorage.customerservice.exception.NoSuchDataException;
 import com.sycoldstorage.customerservice.repository.CustomerRepository;
 import com.sycoldstorage.customerservice.service.CustomerService;
 import com.sycoldstorage.customerservice.spec.CustomerSpecification;
@@ -39,48 +40,52 @@ public class CustomerServiceImpl implements CustomerService {
      * @return
      */
     @Override
-    public Page<SearchCustomerResponse> searchCustomers(SearchCustomerRequest params) {
+    public Page<Customer> searchCustomers(SearchCustomerRequest params) {
         
         //Page, sort 정보를 생성
         PageRequest pageRequest = PageRequest.of(params.getPage(), params.getPageSize(), Sort.by("id"));
         //검색조건 생성
         Specification<Customer> specification = CustomerSpecification.searchWith(params);
-        Page<Customer> customers = customerRepository.findAll(specification, pageRequest);
-
-        //Customer => CustomerSearchResponse 변환
-        return customers.map(v -> modelMapper.map(v, SearchCustomerResponse.class));
+        return customerRepository.findAll(specification, pageRequest);
     }
 
     /**
-     * 고객정보 저장
+     * 고객정보 생성
      * @param saveCustomerRequest
      * @return
      */
     @Transactional
     @Override
-    public long save(SaveCustomerRequest saveCustomerRequest) {
+    public Customer create(SaveCustomerRequest saveCustomerRequest) {
+
+        Customer customerRequest = modelMapper.map(saveCustomerRequest, Customer.class);
+        return customerRepository.save(customerRequest);
+    }
+
+    /**
+     * 고객정보 수정
+     * @param saveCustomerRequest
+     * @return
+     * @throws Exception
+     */
+    @Transactional
+    @Override
+    public Customer update(SaveCustomerRequest saveCustomerRequest) throws NoSuchDataException {
 
         Long id = saveCustomerRequest.getId();
 
-        if (id == null) {
-            Customer customerRequest = modelMapper.map(saveCustomerRequest, Customer.class);
-            Customer customer = customerRepository.save(customerRequest);
-            id = customer.getId();
+        Optional<Customer> customerOptional = customerRepository.findById(id);
+
+        if (customerOptional.isPresent()) {
+            //request값을 customer로 매핑
+            Customer customer = customerOptional.get();
+            modelMapper.map(saveCustomerRequest, customer);
+
+            return customer;
 
         } else {
-
-            Optional<Customer> customerOptional = customerRepository.findById(id);
-
-            if (customerOptional.isPresent()) {
-                //request값을 customer로 매핑
-                Customer customer = customerOptional.get();
-                modelMapper.map(saveCustomerRequest, customer);
-                System.out.println("customer : " + customer);
-            } else {
-                throw new RuntimeException("There is no such ID : " + id);
-            }
+            throw new NoSuchDataException();
         }
-        return id;
     }
 
 }

@@ -47,6 +47,8 @@
     </dependencyManagement>
 
     <build>
+        <!-- Jar파일명 -->
+        <finalName>shinyoung-config-server</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

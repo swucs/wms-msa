@@ -50,6 +50,8 @@
     </dependencyManagement>
 
     <build>
+        <!-- Jar파일명 -->
+        <finalName>shinyoung-api-gateway</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

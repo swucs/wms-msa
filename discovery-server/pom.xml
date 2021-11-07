@@ -42,6 +42,8 @@
     </dependencyManagement>
 
     <build>
+        <!-- Jar파일명 -->
+        <finalName>shinyoung-discovery-server</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

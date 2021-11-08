@@ -9,7 +9,8 @@ ENV TZ=Asia/Seoul
 EXPOSE 9991
 
 ARG MODULE=shinyoung-config-server
-COPY ${MODULE}/config  /config
+#config파일을 복사
+ADD ${MODULE}/target/classes/config  /config
 ARG JAR_FILE=${MODULE}/target/shinyoung-config-server.jar
 #COPY target/classes/config  /app/config
 #ARG JAR_FILE=target/shinyoung-config-server.jar

@@ -10,7 +10,7 @@ build-discovery-server:
     - mvn clean compile package -DskipTests=true
   artifacts:
     paths:
-      - discovery-server/build/libs/shinyoung-discovery-server.jar
+      - discovery-server/target/shinyoung-discovery-server.jar
     expire_in: 1 week
   only:
     - main

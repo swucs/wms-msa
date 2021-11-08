@@ -3,6 +3,7 @@ stages:
   - dockerize
   - deploy
 
+# Discovery Server (유레카)
 build-discovery-server:
   stage: build
   script:
@@ -42,4 +43,135 @@ deploy-discovery-server:
   tags:
     - deploy
   needs: [dockerize-discovery-server]
+  when: manual
+
+
+
+
+#API Gateway
+build-api-gateway:
+  stage: build
+  script:
+    - cd api-gateway
+    - mvn clean compile package -DskipTests=true
+  artifacts:
+    paths:
+      - api-gateway/target/shinyoung-api-gateway.jar
+    expire_in: 1 week
+  only:
+    - main
+  tags:
+    - build
+
+dockerize-api-gateway:
+  stage: dockerize
+  script:
+    - docker build -f api-gateway/Dockerfile --build-arg MODULE=api-gateway --tag registry.sungbae.net/shinyoung/wms/sy-api-gateway:$CI_PIPELINE_IID .
+    - docker push registry.sungbae.net/shinyoung/wms/sy-api-gateway:$CI_PIPELINE_IID
+    - docker rmi registry.sungbae.net/shinyoung/wms/sy-api-gateway:$CI_PIPELINE_IID
+  only:
+    - main
+  tags:
+    - dockerize
+  needs: [build-api-gateway]
+
+
+deploy-api-gateway:
+  stage: deploy
+  script:
+    - ssh angryant@172.30.1.32 "docker pull registry.sungbae.net/shinyoung/wms/sy-api-gateway:$CI_PIPELINE_IID"
+    - ssh angryant@172.30.1.32 "docker ps -q --filter name="api-gateway" | xargs -r docker stop"
+    - ssh angryant@172.30.1.32 "docker image prune -a -f"
+    - ssh angryant@172.30.1.32 "docker run -d -p 8000:8000 --network shinyoung-network --name sy-api-gateway --rm registry.sungbae.net/shinyoung/wms/sy-api-gateway:$CI_PIPELINE_IID "
+  only:
+    - main
+  tags:
+    - deploy
+  needs: [dockerize-api-gateway]
+  when: manual
+
+
+#Config Server
+build-config-server:
+  stage: build
+  script:
+    - cd config-server
+    - mvn clean compile package -DskipTests=true
+  artifacts:
+    paths:
+      - config-server/target/shinyoung-config-server.jar
+    expire_in: 1 week
+  only:
+    - main
+  tags:
+    - build
+
+dockerize-config-server:
+  stage: dockerize
+  script:
+    - docker build -f config-server/Dockerfile --build-arg MODULE=config-server --tag registry.sungbae.net/shinyoung/wms/sy-config-server:$CI_PIPELINE_IID .
+    - docker push registry.sungbae.net/shinyoung/wms/sy-config-server:$CI_PIPELINE_IID
+    - docker rmi registry.sungbae.net/shinyoung/wms/sy-config-server:$CI_PIPELINE_IID
+  only:
+    - main
+  tags:
+    - dockerize
+  needs: [build-config-server]
+
+
+deploy-config-server:
+  stage: deploy
+  script:
+    - ssh angryant@172.30.1.32 "docker pull registry.sungbae.net/shinyoung/wms/sy-config-server:$CI_PIPELINE_IID"
+    - ssh angryant@172.30.1.32 "docker ps -q --filter name="config-server" | xargs -r docker stop"
+    - ssh angryant@172.30.1.32 "docker image prune -a -f"
+    - ssh angryant@172.30.1.32 "docker run -d -p 8888:8888 --network shinyoung-network --name sy-config-server --rm registry.sungbae.net/shinyoung/wms/sy-config-server:$CI_PIPELINE_IID "
+  only:
+    - main
+  tags:
+    - deploy
+  needs: [dockerize-config-server]
+  when: manual
+
+
+#Customer Service
+build-customer-service:
+  stage: build
+  script:
+    - cd customer-service
+    - mvn clean compile package -DskipTests=true
+  artifacts:
+    paths:
+      - customer-service/target/shinyoung-customer-service.jar
+    expire_in: 1 week
+  only:
+    - main
+  tags:
+    - build
+
+dockerize-customer-service:
+  stage: dockerize
+  script:
+    - docker build -f customer-service/Dockerfile --build-arg MODULE=customer-service --tag registry.sungbae.net/shinyoung/wms/sy-customer-service:$CI_PIPELINE_IID .
+    - docker push registry.sungbae.net/shinyoung/wms/sy-customer-service:$CI_PIPELINE_IID
+    - docker rmi registry.sungbae.net/shinyoung/wms/sy-customer-service:$CI_PIPELINE_IID
+  only:
+    - main
+  tags:
+    - dockerize
+  needs: [ build-customer-service ]
+
+
+deploy-customer-service:
+  stage: deploy
+  script:
+    - ssh angryant@172.30.1.32 "docker pull registry.sungbae.net/shinyoung/wms/sy-customer-service:$CI_PIPELINE_IID"
+    - ssh angryant@172.30.1.32 "docker ps -q --filter name="customer-service" | xargs -r docker stop"
+    - ssh angryant@172.30.1.32 "docker image prune -a -f"
+    - ssh angryant@172.30.1.32 "docker run -d -p 9991:9991 --network shinyoung-network --name sy-customer-service --rm registry.sungbae.net/shinyoung/wms/sy-customer-service:$CI_PIPELINE_IID "
+  only:
+    - main
+  tags:
+    - deploy
+  needs: [ dockerize-customer-service ]
   when: manual

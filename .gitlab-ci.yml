@@ -38,7 +38,7 @@ deploy-discovery-server:
     - ssh angryant@172.30.1.32 "docker image prune -a -f"
     - ssh angryant@172.30.1.32 "docker run -d -p 8761:8761 --network shinyoung-network --name sy-discovery-server --rm registry.sungbae.net/shinyoung/wms/sy-discovery-server:$CI_PIPELINE_IID "
   only:
-    - master
+    - main
   tags:
     - deploy
   needs: [dockerize-discovery-server]

@@ -20,6 +20,9 @@ spring:
           enabled: false
 
 eureka:
+  instance:
+    instance-id: config-server   #유레카 등록할 instance id
+    prefer-ip-address: true
   client:
     register-with-eureka: true      #유레카 클라이언트 활성화
     fetch-registry: true            #유레카 클라이언트 활성화

@@ -8,7 +8,7 @@ ENV TZ=Asia/Seoul
 # VOLUME /tmp
 EXPOSE 8761
 ARG MODULE=shinyoung-discovery-server
-#ARG JAR_FILE=${MODULE}/build/libs/shinyoung-discovery-server.jar
-ARG JAR_FILE=target/shinyoung-discovery-server.jar
+ARG JAR_FILE=${MODULE}/build/libs/shinyoung-discovery-server.jar
+#ARG JAR_FILE=target/shinyoung-discovery-server.jar
 ADD ${JAR_FILE} shinyoung-discovery-server.jar
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/shinyoung-discovery-server.jar","--spring.profiles.active=real"]
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/shinyoung-discovery-server.jar"]

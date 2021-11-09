@@ -110,5 +110,29 @@ public class CustomerController {
         return ResponseEntity.ok(entityModel);
 
     }
+    
+    
+    /**
+     * 고객정보 삭제
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/customer/{id}")
+    public ResponseEntity deleteCustomer(@PathVariable long id) {
+
+
+        Customer deletedCustomer = null;
+        try {
+            deletedCustomer = customerService.delete(id);
+        } catch (NoSuchDataException e) {
+            //데이터가 없는 경우
+            return ResponseEntity.notFound().build();
+        }
+
+        EntityModel<Customer> entityModel = EntityModel.of(deletedCustomer)
+                .add(Link.of("/docs/index.html#resources-customers-delete").withRel("profile"));
+
+        return ResponseEntity.ok(entityModel);
+    }
 
 }

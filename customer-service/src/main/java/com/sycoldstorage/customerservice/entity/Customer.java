@@ -33,4 +33,5 @@ public class Customer {
     private String phoneNumber;
     private String faxNumber;
     private boolean use;
+    private boolean deleted;
 }

@@ -88,4 +88,28 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
+
+    /**
+     * 고객정보 삭제 (플래그 처리)
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @Transactional
+    @Override
+    public Customer delete(Long id) throws NoSuchDataException {
+
+        Optional<Customer> customerOptional = customerRepository.findById(id);
+
+        if (customerOptional.isPresent()) {
+            //request값을 customer로 매핑
+            Customer customer = customerOptional.get();
+            customer.setDeleted(true);  //삭제플래그 처리
+            return customer;
+
+        } else {
+            throw new NoSuchDataException();
+        }
+    }
+
 }

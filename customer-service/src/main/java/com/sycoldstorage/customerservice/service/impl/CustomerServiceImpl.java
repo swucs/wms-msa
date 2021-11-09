@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * 고객 Service
+ * 거래처 Service
  */
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -35,7 +35,7 @@ public class CustomerServiceImpl implements CustomerService {
     private ModelMapper modelMapper;
 
     /**
-     * 고객목록 검색
+     * 거래처목록 검색
      * @param params 검색조건을 담은 객체
      * @return
      */
@@ -50,7 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     /**
-     * 고객정보 생성
+     * 거래처정보 생성
      * @param saveCustomerRequest
      * @return
      */
@@ -63,7 +63,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     /**
-     * 고객정보 수정
+     * 거래처정보 수정
      * @param saveCustomerRequest
      * @return
      * @throws Exception
@@ -90,7 +90,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     /**
-     * 고객정보 삭제 (플래그 처리)
+     * 거래처정보 삭제 (플래그 처리)
      * @param id
      * @return
      * @throws Exception

@@ -3,7 +3,7 @@ package com.sycoldstorage.customerservice.dto;
 import lombok.*;
 
 /**
- * 고객 리스트 화면에서 검색 요청
+ * 거래처 리스트 화면에서 검색 요청
  */
 @Builder
 @Getter

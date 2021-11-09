@@ -1,6 +1,7 @@
 package com.sycoldstorage.customerservice.controller;
 
 import com.sycoldstorage.customerservice.dto.SaveCustomerRequest;
+import com.sycoldstorage.customerservice.dto.SaveCustomerResponse;
 import com.sycoldstorage.customerservice.dto.SearchCustomerRequest;
 import com.sycoldstorage.customerservice.dto.SearchCustomerResponse;
 import com.sycoldstorage.customerservice.entity.Customer;
@@ -34,7 +35,7 @@ public class CustomerController {
     private ModelMapper modelMapper;
 
     /**
-     * 고객 목록 조회
+     * 거래처 목록 조회
      * @param params
      * @param assembler
      * @return
@@ -64,7 +65,7 @@ public class CustomerController {
     }
 
     /**
-     * 고객정보 등록
+     * 거래처정보 등록
      * @param request
      * @param errors
      * @return
@@ -74,8 +75,10 @@ public class CustomerController {
                                          Errors errors) {
         Customer createdCustomer = customerService.create(request);
 
-        EntityModel<Customer> entityModel = EntityModel.of(createdCustomer)
-                .add(Link.of("/docs/index.html#resources-customers-create").withRel("profile"));
+        EntityModel<SaveCustomerResponse> entityModel = EntityModel.of(modelMapper.map(createdCustomer, SaveCustomerResponse.class))
+                .add(linkTo(methodOn(CustomerController.class).createCustomer(null, null)).withSelfRel())
+                .add(linkTo(methodOn(CustomerController.class).queryCustomers(null, null)).withRel("list"))
+                .add(Link.of("/docs/index.html#resources-customer-create").withRel("profile"));
 
         URI createdUri = linkTo(methodOn(CustomerController.class).queryCustomers(null, null)).toUri();
 
@@ -84,7 +87,7 @@ public class CustomerController {
 
 
     /**
-     * 고객정보 수정
+     * 거래처정보 수정
      * @param id
      * @param request
      * @param errors
@@ -105,7 +108,9 @@ public class CustomerController {
         }
 
         EntityModel<Customer> entityModel = EntityModel.of(updatedCustomer)
-                .add(Link.of("/docs/index.html#resources-customers-update").withRel("profile"));
+                .add(linkTo(methodOn(CustomerController.class).updateCustomer(id, null, null)).withSelfRel())
+                .add(linkTo(methodOn(CustomerController.class).queryCustomers(null, null)).withRel("list"))
+                .add(Link.of("/docs/index.html#resources-customer-update").withRel("profile"));
 
         return ResponseEntity.ok(entityModel);
 
@@ -113,7 +118,7 @@ public class CustomerController {
     
     
     /**
-     * 고객정보 삭제
+     * 거래처정보 삭제
      * @param id
      * @return
      */
@@ -130,7 +135,9 @@ public class CustomerController {
         }
 
         EntityModel<Customer> entityModel = EntityModel.of(deletedCustomer)
-                .add(Link.of("/docs/index.html#resources-customers-delete").withRel("profile"));
+                .add(linkTo(methodOn(CustomerController.class).deleteCustomer(id)).withSelfRel())
+                .add(linkTo(methodOn(CustomerController.class).queryCustomers(null, null)).withRel("list"))
+                .add(Link.of("/docs/index.html#resources-customer-delete").withRel("profile"));
 
         return ResponseEntity.ok(entityModel);
     }

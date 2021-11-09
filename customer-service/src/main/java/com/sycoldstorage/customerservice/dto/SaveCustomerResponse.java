@@ -6,8 +6,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter
 @ToString
-public class SaveCustomerRequest {
+public class SaveCustomerResponse {
     private Long id;
     private String name;
     private String businessNumber;
@@ -17,5 +18,5 @@ public class SaveCustomerRequest {
     private String address;
     private String phoneNumber;
     private String faxNumber;
-    private String useYn;
+    private boolean use;
 }

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 고객리스트 검색조건을 위한 Specification
+ * 거래처리스트 검색조건을 위한 Specification
  */
 public class CustomerSpecification {
 

@@ -44,7 +44,7 @@ class CustomerServiceImplTest {
     void save() throws Exception {
 
         SaveCustomerRequest customer = SaveCustomerRequest.builder()
-                .name("고객명")
+                .name("거래처명")
                 .businessNumber("111-33-44444")
                 .representativeName("대표자명")
                 .businessConditions("업태")
@@ -60,7 +60,7 @@ class CustomerServiceImplTest {
 
         customer = SaveCustomerRequest.builder()
                 .id(createdCustomer.getId())
-                .name("고객명1")
+                .name("거래처명1")
                 .businessNumber("111-33-55555")
                 .representativeName("대표자명1")
                 .businessConditions("업태1")

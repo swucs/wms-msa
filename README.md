@@ -28,3 +28,71 @@ mvn package로 생성해야 하는데, vm옵션으로 -D키=밸류 (복호화를
 docker build . --tag sy-custemer-service
 
 docker run -d -p 9001:9001 sy-customer-service --name sy-customer-service --link sy-discovery-server:sy-discovery-server
+
+
+
+//네트워크 생성 (api.sungbae.net 서버에 설정해야 함)
+docker network create --gateway 172.18.0.1 --subnet 172.18.0.0/16 shinyoung-network
+
+//생성된 네트워크 정보 상세정보
+docker network inspect shinyoung-network
+
+//1.유레카
+cd discovery-server
+
+.\mvnw clean compile package -DskipTests=true
+
+docker build . -t sy-discovery-server
+
+#application.yml에 정의되어 있는 정보를 환경변수를 통해 변경할 수 있다. application.yml을 수정하지 않아도 된다.
+docker run -d -p 8761:8761 --network shinyoung-network --name sy-discovery-server sy-discovery-server
+
+
+//2.API-Gateway
+cd api-gateway
+
+.\mvnw clean compile package -DskipTests=true
+
+docker build . -t sy-api-gateway
+
+#application.yml에 정의되어 있는 정보를 환경변수를 통해 변경할 수 있다. application.yml을 수정하지 않아도 된다.
+docker run -d -p 8000:8000 --network shinyoung-network --name sy-api-gateway sy-api-gateway
+
+
+//3.Config-Server
+cd config-server
+
+.\mvnw clean compile package -DskipTests=true
+
+docker build . -t sy-config-server
+
+#application.yml에 정의되어 있는 정보를 환경변수를 통해 변경할 수 있다. application.yml을 수정하지 않아도 된다.
+docker run -d -p 8888:8888 --network shinyoung-network --name sy-config-server sy-config-server
+
+
+//4.customer-service
+cd customer-service
+
+.\mvnw clean compile package -DskipTests=true
+
+docker build . -t sy-customer-service
+
+#application.yml에 정의되어 있는 정보를 환경변수를 통해 변경할 수 있다. application.yml을 수정하지 않아도 된다.
+docker run -d -p 9991:9991 --network shinyoung-network --name sy-customer-service sy-customer-service
+
+
+-e spring.config.import="optional:configserver:http://sy-config-server:8888/"
+
+
+
+
+.\mvnw clean compile package -DskipTests=true
+
+docker build -t 태그명 .
+
+//config
+#application.yml에 정의되어 있는 정보를 환경변수를 통해 변경할 수 있다. application.yml을 수정하지 않아도 된다.
+docker run -d -p 8888:8888 --network shinyoung-network
+-e "eureka.client.service-url.defaultZone=http://유레카의네트워크명:8761/eureka"
+-e "spring.profiles.active=real"
+--name config-server 이미지명		

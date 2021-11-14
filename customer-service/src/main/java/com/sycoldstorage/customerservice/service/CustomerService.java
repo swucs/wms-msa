@@ -17,4 +17,7 @@ public interface CustomerService {
 
     @Transactional
     Customer update(SaveCustomerRequest saveCustomerRequest) throws NoSuchDataException;
+
+    @Transactional
+    Customer delete(Long id) throws NoSuchDataException;
 }

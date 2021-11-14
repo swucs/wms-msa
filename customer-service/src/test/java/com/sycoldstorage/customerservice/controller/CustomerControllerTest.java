@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -22,6 +23,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
@@ -54,7 +56,7 @@ class CustomerControllerTest {
     CustomerRepository customerRepository;
 
     @Test
-    @DisplayName("고객목록")
+    @DisplayName("거래처목록")
     void getCustomers() throws Exception {
 
 
@@ -85,10 +87,10 @@ class CustomerControllerTest {
                 .andDo(document("query-customers"
                         , links(
                                 linkWithRel("self").description("link to self")
-                                , linkWithRel("first").description("첫번째 페이지로 이동하는 링크")
-                                , linkWithRel("prev").description("이전 페이지로 이동하는 링크")
-                                , linkWithRel("next").description("다음 페이지로 이동하는 링크")
-                                , linkWithRel("last").description("마지막 페이지로 이동하는 링크")
+                                , linkWithRel("first").description("첫번째 페이지 조회하는 링크")
+                                , linkWithRel("prev").description("이전 페이지 조회하는 링크")
+                                , linkWithRel("next").description("다음 페이지 조회하는 링크")
+                                , linkWithRel("last").description("마지막 페이지 조회하는 링크")
                                 , linkWithRel("profile").description("프로필로 이동하는 링크")
                         )
                         , requestHeaders(
@@ -138,11 +140,13 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("고객정보 생성")
+    @DisplayName("거래처정보 생성")
+    @Transactional
+    @Rollback
     void createCustomer() throws Exception {
 
         SaveCustomerRequest createRequest = SaveCustomerRequest.builder()
-                .name("이름")
+                .name("JUNIT 테스트")
                 .address("주소")
                 .businessConditions("test")
                 .faxNumber("팩스번호")
@@ -162,13 +166,58 @@ class CustomerControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isCreated())
+                //rest docs
+                .andDo(document("customer-create"
+                        , links(
+                                linkWithRel("self").description("link to self")
+                                , linkWithRel("list").description("리스트 조회 링크")
+                                , linkWithRel("profile").description("프로필로 이동하는 링크")
+                        )
+                        , requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("accept header 명시")
+                                , headerWithName(HttpHeaders.CONTENT_TYPE).description("content type 명시")
+                        )
+                        , requestFields(
+                                fieldWithPath("id").description("업체ID")
+                                , fieldWithPath("name").description("업체명")
+                                , fieldWithPath("businessNumber").description("사업자등록번호")
+                                , fieldWithPath("representativeName").description("대표자명")
+                                , fieldWithPath("typeOfBusiness").description("업종")
+                                , fieldWithPath("address").description("주소")
+                                , fieldWithPath("phoneNumber").description("전화번호")
+                                , fieldWithPath("faxNumber").description("fax번호")
+                                , fieldWithPath("useYn").description("사용여부")
+                                , fieldWithPath("businessConditions").description("업태")
+                        )
+                        , responseHeaders(
+//                                headerWithName(HttpHeaders.LOCATION).description("location header")
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type : Hal Json Type")
+                        )
+
+                        , responseFields(
+                                fieldWithPath("id").description("업체ID")
+                                , fieldWithPath("name").description("업체명")
+                                , fieldWithPath("businessNumber").description("사업자등록번호")
+                                , fieldWithPath("representativeName").description("대표자명")
+                                , fieldWithPath("typeOfBusiness").description("업종")
+                                , fieldWithPath("address").description("주소")
+                                , fieldWithPath("phoneNumber").description("전화번호")
+                                , fieldWithPath("faxNumber").description("fax번호")
+                                , fieldWithPath("use").description("사용여부")
+                                , fieldWithPath("businessConditions").description("업태")
+                                , fieldWithPath("_links.self.href").description("생성된 데이터의 상세정보 조회 링크")
+                                , fieldWithPath("_links.list.href").description("리스트 조회 링크정보")
+                                , fieldWithPath("_links.profile.href").description("거래처 등록 profile 링크정보")
+                        )
+                    )
+                )
         ;
 
     }
 
 
     @Test
-    @DisplayName("고객정보 수정")
+    @DisplayName("거래처정보 수정")
     void updateCustomer() throws Exception {
 
         Optional<Customer> customerOptional = customerRepository.findById(47l);
@@ -183,12 +232,57 @@ class CustomerControllerTest {
                         )
                 .andDo(print())
                 .andExpect(status().isOk())
+                //rest docs
+                .andDo(document("customer-create"
+                        , links(
+                                linkWithRel("self").description("link to self")
+                                , linkWithRel("list").description("리스트 조회 링크")
+                                , linkWithRel("profile").description("프로필로 이동하는 링크")
+                        )
+                        , requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("accept header 명시")
+                                , headerWithName(HttpHeaders.CONTENT_TYPE).description("content type 명시")
+                        )
+                        , requestFields(
+                                fieldWithPath("id").description("업체ID")
+                                , fieldWithPath("name").description("업체명")
+                                , fieldWithPath("businessNumber").description("사업자등록번호")
+                                , fieldWithPath("representativeName").description("대표자명")
+                                , fieldWithPath("typeOfBusiness").description("업종")
+                                , fieldWithPath("address").description("주소")
+                                , fieldWithPath("phoneNumber").description("전화번호")
+                                , fieldWithPath("faxNumber").description("fax번호")
+                                , fieldWithPath("useYn").description("사용여부")
+                                , fieldWithPath("businessConditions").description("업태")
+                        )
+                        , responseHeaders(
+//                                headerWithName(HttpHeaders.LOCATION).description("location header")
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type : Hal Json Type")
+                        )
+
+                        , responseFields(
+                                fieldWithPath("id").description("업체ID")
+                                , fieldWithPath("name").description("업체명")
+                                , fieldWithPath("businessNumber").description("사업자등록번호")
+                                , fieldWithPath("representativeName").description("대표자명")
+                                , fieldWithPath("typeOfBusiness").description("업종")
+                                , fieldWithPath("address").description("주소")
+                                , fieldWithPath("phoneNumber").description("전화번호")
+                                , fieldWithPath("faxNumber").description("fax번호")
+                                , fieldWithPath("use").description("사용여부")
+                                , fieldWithPath("businessConditions").description("업태")
+                                , fieldWithPath("_links.self.href").description("생성된 데이터의 상세정보 조회 링크")
+                                , fieldWithPath("_links.list.href").description("리스트 조회 링크정보")
+                                , fieldWithPath("_links.profile.href").description("거래처 등록 profile 링크정보")
+                        )
+                    )
+                )
                 ;
 
     }
 
     @Test
-    @DisplayName("고객정보수정_400에러")
+    @DisplayName("거래처정보수정_400에러")
     void updateCustomer_400error() throws Exception {
 
         this.mockMvc.perform(MockMvcRequestBuilders.put("/api/customer/999999")

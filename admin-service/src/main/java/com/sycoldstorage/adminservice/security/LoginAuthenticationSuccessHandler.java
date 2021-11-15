@@ -1,13 +1,12 @@
 package com.sycoldstorage.adminservice.security;
 
-import com.netflix.discovery.converters.Auto;
 import com.sycoldstorage.adminservice.entity.Admin;
 import com.sycoldstorage.adminservice.service.AdminService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import javax.servlet.ServletException;
@@ -21,6 +20,9 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
     @Autowired
     AdminService adminService;
 
+    @Autowired
+    Environment env;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
@@ -29,8 +31,8 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
 
         String token = Jwts.builder()
                 .setSubject(admin.getId())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
-                .signWith(SignatureAlgorithm.HS512, "shinyoung_admin_token")
+                .setExpiration(new Date(System.currentTimeMillis() + Long.valueOf(env.getProperty("token.access_token.expiration"))))
+                .signWith(SignatureAlgorithm.HS512, env.getProperty("token.secret"))
                 .compact();
 
 

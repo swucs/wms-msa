@@ -1,5 +1,6 @@
 package com.sycoldstorage.adminservice.security;
 
+import com.sycoldstorage.adminservice.dto.LoginAdmin;
 import com.sycoldstorage.adminservice.entity.Admin;
 import com.sycoldstorage.adminservice.service.AdminService;
 import io.jsonwebtoken.Jwts;
@@ -12,6 +13,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Date;
 
@@ -19,6 +21,9 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
 
     @Autowired
     AdminService adminService;
+
+    @Autowired
+    HttpSession httpSession;
 
     @Autowired
     Environment env;
@@ -29,15 +34,21 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
         String id = (String) authentication.getPrincipal();
         Admin admin = adminService.getAdminById(id);
 
-        String token = Jwts.builder()
-                .setSubject(admin.getId())
-                .setExpiration(new Date(System.currentTimeMillis() + Long.valueOf(env.getProperty("token.access_token.expiration"))))
-                .signWith(SignatureAlgorithm.HS512, env.getProperty("token.secret"))
-                .compact();
+        LoginAdmin loginAdmin = new LoginAdmin();
+        loginAdmin.setId(admin.getId());
+        loginAdmin.setName(admin.getName());
 
+        httpSession.setAttribute("loginAdmin", loginAdmin);
 
-        response.addHeader("token", token);
-        response.addHeader("adminId", admin.getId());
+//        String token = Jwts.builder()
+//                .setSubject(admin.getId())
+//                .setExpiration(new Date(System.currentTimeMillis() + Long.valueOf(env.getProperty("token.access_token.expiration"))))
+//                .signWith(SignatureAlgorithm.HS512, env.getProperty("token.secret"))
+//                .compact();
+//
+//
+//        response.addHeader("token", token);
+//        response.addHeader("adminId", admin.getId());
 
     }
 }

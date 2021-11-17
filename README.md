@@ -96,3 +96,8 @@ docker run -d -p 8888:8888 --network shinyoung-network
 -e "eureka.client.service-url.defaultZone=http://유레카의네트워크명:8761/eureka"
 -e "spring.profiles.active=real"
 --name config-server 이미지명		
+
+
+#Redis
+docker run --name redis-container -p 6379:6379 -it -d --restart unless-stopped redis --requirepass qwer1324!
+docker exec -it redis-container /bin/bash

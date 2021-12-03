@@ -34,20 +34,13 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
         String id = (String) authentication.getPrincipal();
         Admin admin = adminService.getAdminById(id);
 
-//        LoginAdmin loginAdmin = new LoginAdmin();
-//        loginAdmin.setId(admin.getId());
-//        loginAdmin.setName(admin.getName());
-//
-//        httpSession.setAttribute("loginAdmin", loginAdmin);
-
         String token = Jwts.builder()
                 .setSubject(admin.getId())
                 .setExpiration(new Date(System.currentTimeMillis() + Long.valueOf(env.getProperty("token.access_token.expiration"))))
                 .signWith(SignatureAlgorithm.HS512, env.getProperty("token.secret"))
                 .compact();
 
-
-        response.addHeader("token", token);
+        response.setHeader("Authorization", token);
         response.addHeader("adminId", admin.getId());
 
     }

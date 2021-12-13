@@ -17,7 +17,7 @@ import javax.persistence.Id;
 @Builder
 @ToString
 @EqualsAndHashCode(of="id")
-@Entity(name = "customer")
+@Entity(name = "Customer")
 public class Customer {
 
     @Id

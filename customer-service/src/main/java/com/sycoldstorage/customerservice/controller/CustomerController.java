@@ -41,7 +41,8 @@ public class CustomerController {
      * @return
      */
     @GetMapping("/customers")
-    public ResponseEntity queryCustomers(@ModelAttribute SearchCustomerRequest params, PagedResourcesAssembler<SearchCustomerResponse> assembler) {
+    public ResponseEntity queryCustomers(@ModelAttribute SearchCustomerRequest params
+            , PagedResourcesAssembler<SearchCustomerResponse> assembler) {
         Page<Customer> customers = customerService.searchCustomers(params);
 
         //Customer => CustomerSearchResponse 변환

@@ -26,8 +26,9 @@
         <module>discovery-server</module>
         <module>api-gateway</module>
         <module>config-server</module>
-        <module>customer-service</module>
         <module>admin-service</module>
+        <module>customer-service</module>
+        <module>item-service</module>
     </modules>
 
     <build>

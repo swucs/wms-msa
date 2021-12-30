@@ -134,47 +134,47 @@ deploy-config-server:
   needs: [dockerize-config-server]
   when: manual
 
-  #admin Service
-  build-admin-service:
-    stage: build
-    script:
-      - cd admin-service
-      - mvn clean compile package -DskipTests=true
-    artifacts:
-      paths:
-        - admin-service/target/shinyoung-admin-service.jar
-      expire_in: 1 week
-    only:
-      - main
-    tags:
-      - build
+#admin Service
+build-admin-service:
+  stage: build
+  script:
+    - cd admin-service
+    - mvn clean compile package -DskipTests=true
+  artifacts:
+    paths:
+      - admin-service/target/shinyoung-admin-service.jar
+    expire_in: 1 week
+  only:
+    - main
+  tags:
+    - build
 
-  dockerize-admin-service:
-    stage: dockerize
-    script:
-      - docker build -f admin-service/Dockerfile --build-arg MODULE=admin-service --tag registry.sungbae.net/shinyoung/wms/sy-admin-service:$CI_PIPELINE_IID .
-      - docker push registry.sungbae.net/shinyoung/wms/sy-admin-service:$CI_PIPELINE_IID
-      - docker rmi registry.sungbae.net/shinyoung/wms/sy-admin-service:$CI_PIPELINE_IID
-    only:
-      - main
-    tags:
-      - dockerize
-    needs: [ build-admin-service ]
+dockerize-admin-service:
+  stage: dockerize
+  script:
+    - docker build -f admin-service/Dockerfile --build-arg MODULE=admin-service --tag registry.sungbae.net/shinyoung/wms/sy-admin-service:$CI_PIPELINE_IID .
+    - docker push registry.sungbae.net/shinyoung/wms/sy-admin-service:$CI_PIPELINE_IID
+    - docker rmi registry.sungbae.net/shinyoung/wms/sy-admin-service:$CI_PIPELINE_IID
+  only:
+    - main
+  tags:
+    - dockerize
+  needs: [ build-admin-service ]
 
 
-  deploy-admin-service:
-    stage: deploy
-    script:
-      - ssh angryant@172.30.1.32 "docker pull registry.sungbae.net/shinyoung/wms/sy-admin-service:$CI_PIPELINE_IID"
-      - ssh angryant@172.30.1.32 "docker ps -q --filter name="admin-service" | xargs -r docker stop"
-      - ssh angryant@172.30.1.32 "docker image prune -a -f"
-      - ssh angryant@172.30.1.32 "docker run -d -p 9991:9991 --network shinyoung-network --name sy-admin-service --rm registry.sungbae.net/shinyoung/wms/sy-admin-service:$CI_PIPELINE_IID "
-    only:
-      - main
-    tags:
-      - deploy
-    needs: [ dockerize-admin-service ]
-    when: manual
+deploy-admin-service:
+  stage: deploy
+  script:
+    - ssh angryant@172.30.1.32 "docker pull registry.sungbae.net/shinyoung/wms/sy-admin-service:$CI_PIPELINE_IID"
+    - ssh angryant@172.30.1.32 "docker ps -q --filter name="admin-service" | xargs -r docker stop"
+    - ssh angryant@172.30.1.32 "docker image prune -a -f"
+    - ssh angryant@172.30.1.32 "docker run -d -p 9991:9991 --network shinyoung-network --name sy-admin-service --rm registry.sungbae.net/shinyoung/wms/sy-admin-service:$CI_PIPELINE_IID "
+  only:
+    - main
+  tags:
+    - deploy
+  needs: [ dockerize-admin-service ]
+  when: manual
 
 
 #Customer Service

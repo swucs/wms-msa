@@ -12,7 +12,7 @@
     <artifactId>admin-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>admin-service</name>
-    <description>customer-service</description>
+    <description>admin-service</description>
     <packaging>jar</packaging>
 
 
@@ -111,6 +111,8 @@
     </dependencyManagement>
 
     <build>
+        <!-- Jar파일명 -->
+        <finalName>shinyoung-admin-service</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

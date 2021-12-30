@@ -2,10 +2,13 @@ package com.sycoldstorage.itemservice.entity;
 
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.time.LocalDateTime;
 
 /**
@@ -22,12 +25,21 @@ import java.time.LocalDateTime;
 public class Item {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_item")
     private Long id;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private double unitWeight;
+
+    @Column(nullable = false)
     private String unitName;
-    private LocalDateTime registerDate;
+
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime registerdDate;
+
     private String remarks;
 }

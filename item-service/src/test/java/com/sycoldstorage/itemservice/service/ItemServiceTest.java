@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,6 +44,27 @@ class ItemServiceTest {
         assertThat(items).isNotNull();
         assertThat(items.size()).isEqualTo(1);
         assertThat(items.get(0).getName()).isEqualTo("닭꼬치");
+
+    }
+
+    @Test
+    @DisplayName("품목신규생성")
+    void createItem() {
+        Item item = Item.builder()
+                .name("품목신규")
+                .unitWeight(3.1)
+                .unitName("상자")
+                .registerdDate(LocalDateTime.now())
+                .build();
+
+        Item savedItem = itemService.createItem(item);
+
+        assertThat(savedItem).isNotNull();
+        assertThat(savedItem.getName()).isEqualTo("닭꼬치");
+        assertThat(savedItem.getUnitWeight()).isEqualTo(3.1);
+        assertThat(savedItem.getUnitName()).isEqualTo("상자");
+        assertThat(savedItem.getRegisterdDate()).isNotNull();
+
 
     }
 }

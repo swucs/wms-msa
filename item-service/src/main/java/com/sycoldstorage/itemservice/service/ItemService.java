@@ -8,4 +8,6 @@ import java.util.List;
 public interface ItemService {
 
     List<Item> searchItems(SearchItemRequest params);
+
+    Item createItem(Item item);
 }

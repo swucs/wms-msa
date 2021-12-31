@@ -15,4 +15,9 @@ ARG JAR_FILE=${MODULE}/target/shinyoung-config-server.jar
 #COPY target/classes/config  /app/config
 #ARG JAR_FILE=target/shinyoung-config-server.jar
 ADD ${JAR_FILE} shinyoung-config-server.jar
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/shinyoung-config-server.jar","--spring.cloud.config.server.git.uri=/app/config", "--eureka.client.service-url.defaultZone=http://sy-discovery-server:8761/eureka"]
+ENTRYPOINT ["java" \
+                ,"-Djava.security.egd=file:/dev/./urandom" \
+                ,"-jar","/app/shinyoung-config-server.jar" \
+                ,"--spring.cloud.config.server.git.uri=/app/config" \
+                , "--eureka.client.service-url.defaultZone=http://sy-discovery-server:8761/eureka" \
+            ]

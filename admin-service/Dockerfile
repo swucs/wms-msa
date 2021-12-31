@@ -11,4 +11,11 @@ ARG MODULE=shinyoung-admin-service
 ARG JAR_FILE=${MODULE}/target/shinyoung-admin-service.jar
 #ARG JAR_FILE=target/shinyoung-admin-service.jar
 ADD ${JAR_FILE} shinyoung-admin-service.jar
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/shinyoung-admin-service.jar","--spring.profiles.active=real", "--eureka.client.service-url.defaultZone=http://sy-discovery-server:8761/eureka", "--spring.config.import=optional:configserver:http://sy-config-server:8888"]
+ENTRYPOINT ["java" \
+                ,"-Djava.security.egd=file:/dev/./urandom" \
+                ,"-jar" \
+                ,"/app/shinyoung-admin-service.jar" \
+                ,"--spring.profiles.active=real" \
+                , "--eureka.client.service-url.defaultZone=http://sy-discovery-server:8761/eureka" \
+                , "--spring.config.import=optional:configserver:http://sy-config-server:8888" \
+            ]

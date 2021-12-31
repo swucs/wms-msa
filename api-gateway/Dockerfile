@@ -16,8 +16,9 @@ ENTRYPOINT ["java" \
                 ,"-jar" \
                 ,"/app/shinyoung-api-gateway.jar" \
                 ,"--eureka.client.service-url.defaultZone=http://sy-discovery-server:8761/eureka" \
+                , "--spring.config.import=optional:configserver:http://sy-config-server:8888" \
                 , "--cors.allowedOrigin=https://dev.sycoldstorage.com" \
-                ]
+            ]
 
 #spring.cloud.gateway.globalcors.cors-configuration./**.allowed-origins
 #"--spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedOrigins=http://sy-wms-ui:3000"

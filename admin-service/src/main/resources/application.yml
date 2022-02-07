@@ -1,0 +1,63 @@
+server:
+  port: 9992
+
+spring:
+  application:
+    name: admin-service
+
+  config:
+    import: "optional:configserver:http://localhost:8888/"    #config server의 url
+  cloud:
+    config:
+      name: sycoldstorage   #config application명
+      profile: dev          #config profile명
+
+  #JPA 설정
+  jpa:
+    properties:
+      hibernate:
+        #Dialect 설정
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        #하이버네이트가 실행하는 모든 SQL문을 콘솔로 출력해 준다
+        show_sql: true
+        #콘솔에 출력되는 JPA 실행 쿼리를 가독성있게 표현한다.
+        format_sql: true
+        #디버깅이 용이하도록 SQL문 이외에 추가적인 정보를 출력해 준다.
+        use_sql_comments: true
+        #엔티티와 테이블이 정상 매핑되어 있는지만 검증합니다.
+        ddl-auto: validate    #validate : 추후 변경할것
+        generate-ddl: false  #false : 추후 변경할것
+
+
+  datasource:
+    driver-class-name: ${datasource.driver-class-name}
+    url: ${datasource.url}
+    username: ${datasource.username}
+    password: ${datasource.password}
+
+eureka:
+  instance:
+    instance-id: admin-service   #유레카 등록할 instance id
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true      #유레카 클라이언트 활성화
+    fetch-registry: true            #유레카 클라이언트 활성화
+    service-url:
+      defaultZone: http://localhost:8761/eureka   #eureka server의 url
+
+#p6spy을 이용한 쿼리 파라메터 로깅
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      multiline: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ["env", "refresh", "info"]
+
+
+encrypt:
+  key: xxxx(보안상삭제)

@@ -1,0 +1,67 @@
+server:
+  port: 8000
+
+eureka:
+  instance:
+    instance-id: api-gateway   #유레카 등록할 instance id
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true      #유레카 클라이언트 활성화
+    fetch-registry: true            #유레카 클라이언트 활성화
+    service-url:
+      defaultZone: http://localhost:8761/eureka   #eureka server의 url
+
+spring:
+  application:
+    name: api-gateway
+
+  config:
+    import: "optional:configserver:http://localhost:8888/"    #config server의 url
+  cloud:
+    config:
+      name: sycoldstorage   #config application명
+      profile: dev          #config profile명
+
+    gateway:
+      routes:
+        - id: customer-service
+          uri: lb://CUSTOMER-SERVICE    #로드밸런싱, 유레카 서버에 등록된  Application ID
+                                        #lb://로 등록하게 되면, Scale-Out되거나 uri가 변경이 되더라도 Gateway에서는 알 필요가 없어짐.
+          predicates:
+            - Path=/customer/**      #gateway에 /customer/**로 요청이 들어오면 customer-service로 매핑
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/customer/?(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+
+        - id: admin-service
+          uri: lb://ADMIN-SERVICE    #로드밸런싱, 유레카 서버에 등록된  Application ID
+          #lb://로 등록하게 되면, Scale-Out되거나 uri가 변경이 되더라도 Gateway에서는 알 필요가 없어짐.
+          predicates:
+            - Path=/admin/login      #gateway에 /customer/**로 요청이 들어오면 customer-service로 매핑
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/admin/?(?<segment>.*), /$\{segment}
+
+
+      #CORS 처리
+#      default-filters:
+#        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+#      globalcors:
+#        corsConfigurations:
+#          '[/**]':
+#            allowedOrigins: "http://localhost:3000"
+#            allowedMethods:
+#              - POST
+#            allow-credentials: true
+
+
+cors:
+  allowedOrigin: "http://localhost:3000"
+  allowedMethods: "*"
+  exposedHeader: "Authorization,adminId"
+
+encrypt:
+  key: xxxx
